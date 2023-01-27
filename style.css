@@ -1,0 +1,39 @@
+.grid {
+    width: 230px;
+    height: 500px;
+    display: flex;
+    
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+
+
+    border: 3px solid #000000; 
+    padding: 10px;
+}
+
+/* grid 20 x 40 should be 200 + 20*gap wide w/ 800 div elements */
+
+.grid div {
+    flex-shrink: initial;
+    width: 20px;
+    height: 20px;
+    background-color: white;;
+    border: 1px solid #000000;
+}
+
+.grid div.floor {
+    width: 0px;
+    height: 0px;
+    border: none;
+}
+
+.grid .active {
+    background-color: rgb(175, 31, 31);;
+}
+
+.grid .taken {
+    /* background-color: #5a5656; */
+}
+
