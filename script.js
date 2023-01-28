@@ -26,6 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
         [0, 1, 2, width+2]
     ];
 
+    const  TTetromino = [
+        [0, 1, 2, width+1],
+        [2,  width+1, width+2, 2*width+2],
+        [width+1, 2*width, 2*width+1, 2*width+2],
+        [0, width,  width+1, 2*width]
+    ];
+
+    const OTetromino = [
+        [0, 1, width, width+1]
+        ];
+
 
     class Tetromino {
         constructor(current_piece, current_rotation=0) {
@@ -37,12 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const currentT = new Tetromino(LTetromino, 0);
+    const currentT = new Tetromino(OTetromino, 0);
 
     var currentPosition = 0;
     var currentLateralPos = 0;
     var rotation = 0;
-    var the_tetrominos = [LTetromino, JTetromino];
+    var the_tetrominos = [LTetromino, JTetromino, TTetromino, OTetromino];
     // var current = the_tetrominos[0][0];
 
     for(i = 0; i < 210; i++) {
@@ -166,16 +177,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function spin() {
-        rotation = (rotation+1) % 4;
+        console.log(currentT.current.length)
+
+        rotation = (currentT.current_rotation+1) % currentT.current_piece.length;
         undraw();
         currentT.current_rotation = rotation;
         if(check_collision()==0){
             draw();
         }
         else{
-            rotation = (rotation -1) % 4;
+            rotation = Math.abs((rotation -1) % currentT.current_piece.length);
             draw();
         }
+        
     }
 
     function goLeft() {
