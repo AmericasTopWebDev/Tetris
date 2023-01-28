@@ -18,11 +18,32 @@ document.addEventListener('DOMContentLoaded', () => {
         [1, 2, width+2, 2*width+2],
         [width+2, 2*width, 2*width+1, 2*width+2]
     ];
-    
+
+    const  JTetromino = [
+        [2, width+2, 2*width+2, 2*width+1],
+        [width, 2*width, 2*width+1, 2*width+2],
+        [0, 1, width, 2*width],
+        [0, 1, 2, width+2]
+    ];
+
+
+    class Tetromino {
+        constructor(current_piece, current_rotation=0) {
+            this.current_piece = current_piece;
+            this.current_rotation = current_rotation;
+        }
+        get current() {
+            return this.current_piece[this.current_rotation];
+        }
+    }
+
+    const currentT = new Tetromino(LTetromino, 0);
+
     var currentPosition = 0;
     var currentLateralPos = 0;
     var rotation = 0;
-    var current = LTetromino[0];
+    var the_tetrominos = [LTetromino, JTetromino];
+    // var current = the_tetrominos[0][0];
 
     for(i = 0; i < 210; i++) {
         const gridDiv = document.querySelector(".grid");
@@ -38,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     init(); 
 
     function init() {
+        
         draw();
     }
 
@@ -53,22 +75,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else{
             draw();
-            current.forEach(index => {check_row(index + currentPosition)})
+            currentT.current.forEach(index => {check_row(index + currentPosition)})
             spawnNew();
         }
     }
 
     function check_collision(pseudo=false) {
         var downstairs_neighbors = [];
-        current.forEach(index => {
-            if(!current.includes(index+width)){
+        currentT.current.forEach(index => {
+            if(!currentT.current.includes(index+width)){
             downstairs_neighbors.push(gridArray[currentPosition + index + width]);
             }
         })
 
         if(downstairs_neighbors.some(ele => ele.classList.contains('taken'))){
             if(!pseudo){
-            current.forEach(index => gridArray[index+currentPosition].classList.add("taken"))
+                currentT.current.forEach(index => gridArray[index+currentPosition].classList.add("taken"))
             }
             console.log("I'm stuck")
             
@@ -107,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function draw() {
         
-            current.forEach(index => {
+            currentT.current.forEach(index => {
                 //For tomorrow: crunch position increments with modulo
                 (gridArray[index + currentPosition]).classList.add("active");
             })
@@ -115,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     function undraw() {
-        current.forEach(index => {
+        currentT.current.forEach(index => {
             //For tomorrow: crunch position increments with modulo
             (gridArray[index + currentPosition]).classList.remove("active");
         })
@@ -124,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function spawnNew(){
         currentPosition = 0;
         currentLateralPos = 0;
+        currentT.current_piece = the_tetrominos[Math.floor(Math.random() * the_tetrominos.length)];
+        currentT.current_rotation = 0;
         draw();
     }
     function control(e) {
@@ -144,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function spin() {
         rotation = (rotation+1) % 4;
         undraw();
-        current = LTetromino[rotation];
+        currentT.current_rotation = rotation;
         if(check_collision()==0){
             draw();
         }
@@ -157,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function goLeft() {
         undraw();
         let distFromWall = 9;
-        current.forEach(index => {
+        currentT.current.forEach(index => {
             if((index+currentPosition)%10 < distFromWall){
                 distFromWall = (index+currentPosition)%10;
             }
@@ -177,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function goRight() {
         undraw();
         let distFromWall = 9;
-        current.forEach(index => {
+        currentT.current.forEach(index => {
             if((9 - (index+currentPosition)%10) < distFromWall){
                 distFromWall = (9-(index+currentPosition)%10);
             }
