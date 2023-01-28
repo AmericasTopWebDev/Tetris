@@ -33,6 +33,22 @@
     background-color: rgb(175, 31, 31);;
 }
 
+.grid .active.L{
+    background-color: #f58216;
+}
+
+.grid .active.J{
+    background-color: #c01a0e;
+}
+
+.grid .active.T{
+    background-color: #2a9720;
+}
+
+.grid .active.O{
+    background-color: #d879a9;
+}
+
 .grid .taken {
     /* background-color: #5a5656; */
 }

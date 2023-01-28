@@ -39,21 +39,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     class Tetromino {
-        constructor(current_piece, current_rotation=0) {
+        constructor(current_piece, current_rotation=0, name="L") {
             this.current_piece = current_piece;
             this.current_rotation = current_rotation;
+            this.name = name;
         }
         get current() {
             return this.current_piece[this.current_rotation];
         }
     }
 
-    const currentT = new Tetromino(OTetromino, 0);
+    const currentT = new Tetromino(LTetromino, 0);
 
     var currentPosition = 0;
     var currentLateralPos = 0;
     var rotation = 0;
     var the_tetrominos = [LTetromino, JTetromino, TTetromino, OTetromino];
+    var names = ["L", "J", "T", "O"];
     // var current = the_tetrominos[0][0];
 
     for(i = 0; i < 210; i++) {
@@ -142,7 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
             currentT.current.forEach(index => {
                 //For tomorrow: crunch position increments with modulo
-                (gridArray[index + currentPosition]).classList.add("active");
+                (gridArray[index + currentPosition]).classList.add("active", currentT.name);
+                
             })
         }
     
@@ -150,14 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function undraw() {
         currentT.current.forEach(index => {
             //For tomorrow: crunch position increments with modulo
-            (gridArray[index + currentPosition]).classList.remove("active");
+            (gridArray[index + currentPosition]).classList.remove("active", currentT.name);
         })
     }
 
     function spawnNew(){
         currentPosition = 0;
         currentLateralPos = 0;
-        currentT.current_piece = the_tetrominos[Math.floor(Math.random() * the_tetrominos.length)];
+        let selection = Math.floor(Math.random() * the_tetrominos.length)
+        currentT.current_piece = the_tetrominos[selection];
+        currentT.name = names[selection]
         currentT.current_rotation = 0;
         draw();
     }
