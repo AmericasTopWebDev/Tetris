@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     var currentPosition = 0;
+    var currentLateralPos = 0;
     var rotation = 0;
     var current = LTetromino[0];
 
@@ -53,11 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else{
             draw();
+            current.forEach(index => {check_row(index + currentPosition)})
             spawnNew();
         }
     }
 
-    function check_collision() {
+    function check_collision(pseudo=false) {
         var downstairs_neighbors = [];
         current.forEach(index => {
             if(!current.includes(index+width)){
@@ -66,14 +68,46 @@ document.addEventListener('DOMContentLoaded', () => {
         })
 
         if(downstairs_neighbors.some(ele => ele.classList.contains('taken'))){
+            if(!pseudo){
             current.forEach(index => gridArray[index+currentPosition].classList.add("taken"))
+            }
             console.log("I'm stuck")
+            
             return -1;
         }
         else{return 0;}
     }
 
+    function check_row(grid_index) {
+        let row = Math.floor(grid_index / width);
+        row *= 10;
+        let full = true;
+        for(i = row; i < (row+10); i++){
+            if(!gridArray[i].classList.contains("taken")){
+                full = false;
+            }
+        }
+        console.log("I checked indices:"+row+"to"+(row+10))
+        console.log("And I think that it is" + full);
+        if(full){
+            for(i = row; i < (row+10); i++){
+                gridArray[i].classList.remove("taken");
+                gridArray[i].classList.remove("active");
+            }
+
+            for(i = row; i > 0; i--){
+                if(gridArray[i].classList.contains("taken")){
+                    if(i+width < 200){
+                        gridArray[i+width].classList.add("taken", "active");
+                        gridArray[i].classList.remove("taken", "active");
+                    }
+                }
+            }
+        }
+    }
+
     function draw() {
+        
             current.forEach(index => {
                 //For tomorrow: crunch position increments with modulo
                 (gridArray[index + currentPosition]).classList.add("active");
@@ -90,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function spawnNew(){
         currentPosition = 0;
+        currentLateralPos = 0;
         draw();
     }
     function control(e) {
@@ -122,27 +157,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function goLeft() {
         undraw();
-        currentPosition--;
-        if(check_collision()==0){
+        if(currentLateralPos > 0){
+            currentLateralPos--;
+            currentPosition--;
+        }
+        if(check_collision(true)==0){
             draw();
         }
         else{
             currentPosition++;
+            currentLateralPos++;
             draw();
         }
     }
 
     function goRight() {
         undraw();
-        currentPosition++;
-        if(check_collision()==0){
+        if(currentLateralPos < 9){
+            currentLateralPos++;
+            currentPosition++;
+        }
+        if(check_collision(true)==0){
             draw();
         }
         else{
             currentPosition--;
+            currentLateralPos--;
             draw();
         }
     }
+
 
     document.addEventListener('keydown', control)
 
