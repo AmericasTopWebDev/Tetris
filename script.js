@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
         [1, 2, width+2, 2*width+2],
         [width+2, 2*width, 2*width+1, 2*width+2]
     ];
-
     
     var currentPosition = 0;
     var currentLateralPos = 0;
@@ -157,8 +156,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function goLeft() {
         undraw();
-        if(currentLateralPos > 0){
-            currentLateralPos--;
+        let distFromWall = 9;
+        current.forEach(index => {
+            if((index+currentPosition)%10 < distFromWall){
+                distFromWall = (index+currentPosition)%10;
+            }
+        })
+        if(distFromWall > 0){
             currentPosition--;
         }
         if(check_collision(true)==0){
@@ -166,15 +170,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else{
             currentPosition++;
-            currentLateralPos++;
             draw();
         }
     }
 
     function goRight() {
         undraw();
-        if(currentLateralPos < 9){
-            currentLateralPos++;
+        let distFromWall = 9;
+        current.forEach(index => {
+            if((9 - (index+currentPosition)%10) < distFromWall){
+                distFromWall = (9-(index+currentPosition)%10);
+            }
+        })
+        if(distFromWall > 0){
             currentPosition++;
         }
         if(check_collision(true)==0){
@@ -182,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         else{
             currentPosition--;
-            currentLateralPos--;
             draw();
         }
     }
